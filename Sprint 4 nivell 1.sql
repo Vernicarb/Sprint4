@@ -166,14 +166,13 @@ IGNORE 1 ROWS;
 -- Exercici 1
 --  Realitza una subconsulta que mostri tots els usuaris amb més de 30 transaccions utilitzant almenys 2 taules.
 
-SELECT * 
-FROM users 
-WHERE id IN (
-    SELECT user_id 
-    FROM transactions 
-    GROUP BY user_id 
-    HAVING COUNT(*) > 30
-);
+SELECT u.id AS user_id, u.name, u.surname, transaction_count.count
+FROM users u
+join (select t.user_id,count(t.id) as count from transactions t 
+         where declined=0
+         group by t.user_id
+         having count(t.id)>30) as transaction_count 
+ON u.id= transaction_count.user_id;
 
 -- Exercici 2
 -- Mostra la mitjana d'amount per IBAN de les targetes de crèdit a la companyia Donec Ltd, utilitza almenys 2 taules.
